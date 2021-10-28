@@ -8,4 +8,4 @@ todos:
 * finish the loss and function -- BM
 * optimiztion -- BM
 * finish task 1 -- AB
-* rbf -- JJ
+* rbf -- **done**
