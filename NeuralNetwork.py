@@ -11,7 +11,7 @@ class NeuralNetwork(object):
     A Optimizer class.
 
     """
-    def __init__(self, rho, sigma, N):
+    def __init__(self, task, rho, sigma, N):
         """
         Inputs:
         - task: solvable task
@@ -19,6 +19,7 @@ class NeuralNetwork(object):
         - sigma: sigma
         - N: nr of neurons
         """
+        self.task = task
         self.rho = rho
         self.sigma = sigma
         self.N = N
@@ -139,11 +140,13 @@ class NeuralNetwork(object):
 
         return omega
 
-    def MLP(self, omega ,input, target):
+    def MLP(self, omega, input, target, W = None, bias = None):
 
-        W = omega[:-2*(self.N)].reshape((2, (self.N)))
         v = omega[-(self.N):]
-        bias = omega[-2*(self.N):-(self.N)]
+
+        if self.task == 1:
+            W = omega[:-2*(self.N)].reshape((2, (self.N)))
+            bias = omega[-2*(self.N):-(self.N)]
 
         # X*W
         mult = self.multInputWeights(input, W)
@@ -174,12 +177,16 @@ class NeuralNetwork(object):
         :param maxiters: max iterations for the minimize method.
         :return:
         """
+
+
         return scipy.optimize.minimize(method, omega, args, method = 'CG', options={"maxiter":maxiters})
 
-    def prediction(self, optimizedWeights, meshgrid1D):
-        W = optimizedWeights[:-2* self.N].reshape((2,self.N))
+    def prediction(self, optimizedWeights, meshgrid1D, W = None, bias = None):
+
         v = optimizedWeights[-self.N:]
-        bias = optimizedWeights[-2*self.N:-self.N]
+        if self.task == 1:
+            W = optimizedWeights[:-2* self.N].reshape((2,self.N))
+            bias = optimizedWeights[-2*self.N:-self.N]
 
         mult = self.multInputWeights(meshgrid1D, W)
         linearResult = self.computeLinearResult(mult, bias)
@@ -188,7 +195,7 @@ class NeuralNetwork(object):
 
         return f_x
 
-    def plotting(self, weightOptimized, title='Plotting of the function'): #if you do not provide a title, 'Plotting...' will be used
+    def plotting(self, weightOptimized, W = None, bias = None, title='Plotting of the function'): #if you do not provide a title, 'Plotting...' will be used
             #create the object
         fig = plt.figure()
         ax = plt.axes(projection='3d')
@@ -200,7 +207,11 @@ class NeuralNetwork(object):
         X, Y = np.meshgrid(x, y)
         mixed =  np.vstack((X.flatten(),Y.flatten())).T
         #make the nxn grid into 2d array that can be fed into func
-        Z = self.prediction(weightOptimized, mixed)#evaluate the function (note that X,Y,Z are matrix)
+        if self.task == 1:
+            Z = self.prediction(weightOptimized, mixed)#evaluate the function (note that X,Y,Z are matrix)
+        if self.task == 2:
+            Z = self.prediction(weightOptimized, mixed, W, bias)#evaluate the function (note that X,Y,Z are matrix)
+
         Z = Z.reshape((n,n))
 
         ax.plot_surface(X, Y, Z, rstride=1, cstride=1,cmap='viridis', edgecolor='none')

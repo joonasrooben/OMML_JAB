@@ -25,15 +25,32 @@ y_te = y_test.to_numpy()
 #print(test_err)
 #opt.plotting(result[1], 'The approximator')
 ##### end of an example
+"""
+Exercice 1
+"""
 rho = 1e-5
 sigma = 1
 N = 20
-nn = NeuralNetwork(rho, sigma, N)
+
+#Exercice 1
+
+nn = NeuralNetwork(1, rho, sigma, N)
 omega = nn.createOmega()
 mlp = nn.MLP(omega, X_train, y_tr)
 result = nn.minimise(nn.MLP, omega, args=(X_train, y_tr))
 nn.plotting(result.x)
 
+
+#Exercice 2
+
+nn = NeuralNetwork(2, rho, sigma, N)
+v = np.array(nn.createWeightsForHiddenLayer(N))
+omega = nn.createOmega()
+W = omega[:-2*N].reshape((2,N))
+bias = omega[-2*N:-N]
+mlp = nn.MLP(omega, X_train, y_tr, W, bias)
+result = nn.minimise(nn.MLP, v, args=(X_train, y_tr, W, bias))
+nn.plotting(result.x, W, bias)
 
 
 """
