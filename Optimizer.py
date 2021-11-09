@@ -25,7 +25,7 @@ class Optimizer(object):
         self.N = N
         self.met = met
 
-    def minimize(self, data, labels, seed=123):
+    def minimize(self, data, labels, seed=123, tol = None, opts = None, loops = 0.001):
         """
         Minimizer task.
 
@@ -33,10 +33,16 @@ class Optimizer(object):
         - data: train or test data
         - labels: labels
         - seed: by defult 123
-
+        - tol: the tolerance of optimizer (default None)
+        - opts: special options passed as a dict to optimizer e.g {'maxiter':100, 'gtol':1e-05} (default None)
+        - loops: the difference to be achieved between two itertions in decomposition method in task 3 (default 0.001)
+        
         Returns: 
         - model with info
         - learned weights in default setting
+        - initial loss
+        - the model also outputs the stats in list = [initial_loss, iterations, nr_grads_ev, nr_fun_ev]
+            (NB in the task #3 the iterations is the nr of outer iterations)
         """
         
 
@@ -45,32 +51,63 @@ class Optimizer(object):
             shape = C.shape
             args = (self.N,self.sigma, res, labels, self.rho, shape, None, 0) #three modes: 0: both supervised; 1: centers unsupervised; 2:weights v unsupervised
             W = np.append(C.flatten(),V)
-            print('Loss in the beginnnig:', self.loss(W, args))
-            result_rbf = scipy.optimize.minimize(self.loss, W,jac = self.grad_both, args= (args,) , method=self.met)#, options = {"maxiter": 500})
+            initial_loss = self.loss(W, args)
+            result_rbf = scipy.optimize.minimize(self.loss, W,jac = self.grad_both, args= (args,),
+                                                 method=self.met, options = opts, tol = tol)
             W = result_rbf.x
+            nr_grads = result_rbf.njev
+            nr_fun = result_rbf.nfev
+            iters = result_rbf.nit
+            
         elif self.task == 2:
             C,V,res = self.preproc(self.N, data, 1, seed=seed)
             shape = C.shape
             args = (self.N,self.sigma, res, labels, self.rho, shape,C, 1) #three modes: 0: both supervised; 1: centers unsupervised; 2:weights v unsupervised
             W = V 
-            print('Loss in the beginning:', self.loss(W, args))
-            result_rbf = scipy.optimize.minimize(self.loss, W, args= (args,),jac=self.grad_v,  method=self.met)#, options = {"maxiter": 5})
+            initial_loss = self.loss(W, args)
+            result_rbf = scipy.optimize.minimize(self.loss, W, args= (args,),jac=self.grad_v,
+                                                  method=self.met, options = opts, tol = tol)
             W = np.append(C, result_rbf.x)
+            nr_grads = result_rbf.njev
+            nr_fun = result_rbf.nfev
+            iters = result_rbf.nit
+            
         else:
             C,V,res = self.preproc(self.N, data, 1, seed = seed)
             shape = C.shape
             args = (self.N,self.sigma, res, labels, self.rho, shape,C, 1)
             W = V 
-            print('Los in the beginng:', self.loss(W, args))
-            result_rbf = scipy.optimize.minimize(self.loss, W, args= (args,) ,jac=self.grad_v, method=self.met)
-            print(result_rbf)
-            V = result_rbf.x
-            args = (self.N,self.sigma, res, labels, self.rho, shape,result_rbf.x, 2)
-            W = C
-            print('Loss after non convex optim:', self.loss(W, args))
-            result_rbf = scipy.optimize.minimize(self.loss, W, args= (args,) ,jac = self.grad_c, method=self.met)
-            W = np.append(result_rbf.x, V)
-        return result_rbf, W
+            initial_loss =  self.loss(W, args)
+            print('Loss in the beginning:', initial_loss)            
+            a = initial_loss
+            diff = 10e10
+            nr_grads = 0
+            nr_fun = 0
+            iters = 0
+            while (diff > loops):
+                iters += 1
+                result_rbf = scipy.optimize.minimize(self.loss, W, args= (args,) ,jac=self.grad_v,
+                                                     method=self.met)#, options = opts, tol = tol)
+                nr_grads += result_rbf.njev
+                nr_fun += result_rbf.nfev
+                print('Loss after convex optim:',result_rbf.fun)
+                V = result_rbf.x
+                args = (self.N,self.sigma, res, labels, self.rho, shape,result_rbf.x, 2)
+                W = C
+                result_rbf = scipy.optimize.minimize(self.loss, W, args= (args,) ,jac = self.grad_c, 
+                                                     method=self.met, options = opts, tol = tol)
+                nr_grads += result_rbf.njev
+                nr_fun += result_rbf.nfev
+                b = result_rbf.fun
+                print('Loss after non convex optim:',b)
+                args = (self.N, self.sigma, res, labels, self.rho, shape,result_rbf.x, 1)
+                W =  V
+                diff = a - b
+                a = b
+
+            W = np.append(result_rbf.x, W)
+        return result_rbf, W, [initial_loss, iters, nr_grads, nr_fun]
+
 
     def test_loss(self,W, data, labels):
         """
@@ -140,7 +177,7 @@ class Optimizer(object):
         dervs = np.ones((N, 2)) 
         for i, vk in enumerate(v):
             buff = np.transpose(args[2], (1,0,2))[0] - np.repeat(np.array([c[0][i]]), len(args[2]), axis=0)
-            buff2 = main @ (np.repeat(self.Gaussian(buff, args[1]),2,axis =0).reshape((args[2].shape[0],2)) * 2 * (buff)/(args[1]**2))
+            buff2 = main @ (np.repeat(self.Gaussian(buff, args[1]),2,axis =0).reshape((args[2].shape[0],2)) * 2 * (buff)/(np.linalg.norm(buff)*args[1]**2))
             
             dervs[i] = vk * buff2 + args[4]* c[0][i]
         return dervs.flatten()
