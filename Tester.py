@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 import time
 from Optimizer import *
-data = pd.read_csv('DATA (1).csv')
+data = pd.read_csv('DATA.csv')
 X_train, X_test, y_train, y_test = train_test_split(data[['x1','x2']], data[['y']], test_size=0.255, random_state=1990243)
 
 X_train = X_train.to_numpy()
