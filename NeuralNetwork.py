@@ -195,6 +195,10 @@ class NeuralNetwork(object):
 
         return f_x
 
+    def test_loss(self, optimized_weights, X_data, y_data, N, rho, sigma):
+        return self.MLP(optimized_weights, X_data ,y_data ,N ,rho ,sigma)
+
+
     def plotting(self, weightOptimized, W = None, bias = None, title='Plotting of the function'): #if you do not provide a title, 'Plotting...' will be used
             #create the object
         fig = plt.figure()
