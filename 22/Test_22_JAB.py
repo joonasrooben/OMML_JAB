@@ -3,8 +3,8 @@ from run_22_JAB import *
 #we use weights calculated in the run file
 W = result[1]
 N=32
-sigma = 1.25
-rho = 0.0001
+sigma = 1.0
+rho = 0.0009
 
 def ICanGeneralize(X) :
     X = np.array(X)

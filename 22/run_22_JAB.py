@@ -15,7 +15,7 @@ y_tr = y_train.to_numpy()
 y_te = y_test.to_numpy()
 
 
-opt = Optimizer(2, 0.0001, 1.25, 32, 'CG')
+opt = Optimizer(2, 0.0009, 1.0, 32, 'CG')
 
 init_time = time.time()
 result = opt.minimize(X_train, y_tr, 123)
@@ -31,8 +31,8 @@ test_err = opt.test_loss(result[1],X_test, y_te)
 s = f"""
 {'-'*40}
 # N: {32}
-# Sigma: {1.25}
-# Rho: {0.0001}
+# Sigma: {1.0}
+# Rho: {0.0009}
 # Optimization solver: CG
 # Number of function evaluations : {nr_fun}
 # Number of gradient evaluations : {nr_gr}
