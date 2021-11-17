@@ -168,11 +168,8 @@ class NeuralNetwork(object):
         return expectationRisk + regularizationTerm
 
 
-<<<<<<< HEAD
-    def minimise(self, method, omega, args, maxiters = 500):
-=======
+
     def minimise(self, method, omega, args, maxiters = 300):
->>>>>>> 5812d03254ba741c2a48bf44c28c6948d1cbf298
         """
 
         :param method: method that we use to do the neural network
@@ -181,8 +178,6 @@ class NeuralNetwork(object):
         :param maxiters: max iterations for the minimize method.
         :return:
         """
-
-
         return scipy.optimize.minimize(method, omega, args, method = 'CG', options={"maxiter":maxiters})
 
 
@@ -200,14 +195,13 @@ class NeuralNetwork(object):
 
         return f_x
 
-<<<<<<< HEAD
-
 
     def data_error(self, optimized_weigths, X_data, y_data):
 
-        P = len(X_data)
         f_x = self.prediction(optimized_weigths, X_data)
-        return self.computeEmpiricalRisk(y_data, f_x, P)
+        f_x = f_x.reshape(len(f_x),1)
+        return self.computeEmpiricalRisk(y_data, f_x, len(X_data))
+
 
 
     def plotting(self, weightOptimized, W = None, bias = None, title='Plotting of the function with MLP'): #if you do not provide a title, 'Plotting...' will be used
@@ -215,17 +209,7 @@ class NeuralNetwork(object):
         fig = plt.figure()
         ax = plt.axes(projection='3d')
         n = 100
-=======
-    def test_loss(self, optimized_weights, X_data, y_data, N, rho, sigma):
-        return self.MLP(optimized_weights, X_data ,y_data, N, rho, sigma)
 
-    def plotting(self, weightOptimized, W = None, bias = None, title='Plotting of the function'): #if you do not provide a title, 'Plotting...' will be used
-            #create the object
-        fig = plt.figure()
-        ax = plt.axes(projection='3d')
-        n = 100
-
->>>>>>> 5812d03254ba741c2a48bf44c28c6948d1cbf298
         #create the grid
         x = np.linspace(-2, 2, n) #create 50 points between [-5,5] evenly spaced
         y = np.linspace(-3, 3, n)
@@ -246,3 +230,4 @@ class NeuralNetwork(object):
         ax.set_zlabel('z')
         ax.set_title(title)
         plt.show()
+

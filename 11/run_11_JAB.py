@@ -23,7 +23,6 @@ mlp = nn.MLP(omega, X_train, y_tr)
 init_time = time.time()
 result = nn.minimise(nn.MLP, omega, args=(X_train, y_tr))
 optimization_time = time.time() - init_time
-<<<<<<< HEAD
 optimized_weights = result.x
 train_err = nn.data_error(optimized_weights, X_train, y_tr)
 test_err = nn.data_error(optimized_weights, X_test, y_te)
@@ -32,42 +31,20 @@ test_err = nn.data_error(optimized_weights, X_test, y_te)
 nr_fun = result.nfev
 nr_gr = result.njev
 
-
-plotMLP = nn.plotting(result.x, title= "plot of the function using MLP")
-
-s = f"""
-{'-'*40}
-# N: {30}
-# Sigma: {1.0}
-# Rho: {1e-5}
-=======
-nn.plotting(result.x)
-
-nr_fun = result.nfev
-nr_gr = result.njev
-train_err = nn.test_loss(result.x, X_train, y_tr, N, rho, sigma)
-test_err = nn.test_loss(result.x, X_test, y_te, N, rho, sigma)
-
-
-
 s = f"""
 {'-'*40}
 # N: {32}
 # Sigma: {1.0}
 # Rho: {0.0009}
->>>>>>> 5812d03254ba741c2a48bf44c28c6948d1cbf298
 # Optimization solver: CG
 # Number of function evaluations : {nr_fun}
 # Number of gradient evaluations : {nr_gr}
 # Time for optimizing the network : {optimization_time}
-<<<<<<< HEAD
+
 # Training Error : {train_err}
 # Test Error : {test_err}
-# The plot is above
-=======
-
->>>>>>> 5812d03254ba741c2a48bf44c28c6948d1cbf298
-{'-'*40}
-"""
+{'-'*40}"""
 
 print(s)
+
+plotMLP = nn.plotting(result.x, title= "plot of the function using MLP")
