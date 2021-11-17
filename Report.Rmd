@@ -1,0 +1,74 @@
+---
+title: "Optimization Methods for Machine Learning"
+subtitle : "Project 1"
+author: "Group JAB : Aurèle Bartolomeo, Joonas Järve, Baudouin Martelée "
+date: "November 2021"
+output: 
+  pdf_document: 
+    number_sections: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Introduction
+
+The present work aims to reconstruct a two dimensional function $\textit{F} : \mathbb{R}^2 \rightarrow \mathbb{R}$ from which we don't have the analytic
+expression. The reconstruction (in the region [-2;2]x[-3;3]) will be based on 250 points $(x^p;y^p)$ where $y^p$ is defined as $F(x^p)$ in addition with a small random noise. In a nutshell, we will use neural networks based first on Multilayer Perceptron, then on Radial Basis Functions.
+
+# Question 1. (Full minimization)
+In this section we construct two shallow Feedforward Neural Network : a MLP and a RBF network. The goal is to find a function $f(x)$ which approximates the true function $F$. The regularized training error will be calculated using the following formula :
+
+\[E(\omega;\pi)=\frac{1}{2P}\sum_{p=1}^{P}(f(x^p)-y^p)^2+\frac{\rho}{2}||\omega||^2\]
+where $\omega$/$\pi$ are the parameters/hyperparameters. Observe that the regularization parameter $\rho$ belongs to $\pi$.
+
+## MLP
+As activation function for the MLP network we use the hyperbolic tangent
+
+\[g(t)=\frac{e^{2\sigma t}-1}{e^{2\sigma t}+1}\]
+
+where the spread parameter $\sigma$ will also belong to the set of hypeparameters $\pi$.
+
+We searched for the best hyperparameters (N, $\sigma$, $\rho$) by performing a grid search. Our final values for these parameters are (respectively) : 32, 1 and 0.0009. In the Appendix 
+
+## RBF
+As Radial Basis Function for our network we choose the Gaussian function
+
+\[\phi(||x-c_j||)=e^{-(||x-c_j||/\sigma)^2}\]
+
+As for MLP, the spread parameter $\sigma$ of the function $\phi$ will be added to the list of hyperparameters. After performing a grid search we decide to take as hyperparameters : N=32, $\sigma$=1, $rho$=0.0009.
+
+The plot of the approximating function found (see Apendix) 
+
+# Question 2. (Two blocks methods)
+
+## MLP
+
+## RBF
+
+# Question 3. (Decomposition method)
+
+# Bonus : Best Model
+
+# Conclusion : Final Table
+
+```{r, echo=FALSE}
+library(kableExtra)
+header = c("Ex", "", "N", "Sigma", 
+           "Rho", "Final train error",
+           "Final test error", "Initial FOB",
+           "Final FOB", "optimization time")
+first_line = c(0,0, 2)
+tab = rbind(header, first_line)
+kbl(tab, booktabs = TRUE, row.names=F)
+```
+
+# Appendix (Figures) {-}
+
+## Question 1 (MLP) {-}
+
+## Question 1 (RBF) {-}
+
+
+
