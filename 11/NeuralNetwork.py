@@ -181,6 +181,7 @@ class NeuralNetwork(object):
 
         return scipy.optimize.minimize(method, omega, args, method = 'CG', options={"maxiter":maxiters})
 
+
     def prediction(self, optimizedWeights, meshgrid1D, W = None, bias = None):
 
         v = optimizedWeights[-self.N:]
@@ -196,8 +197,7 @@ class NeuralNetwork(object):
         return f_x
 
     def test_loss(self, optimized_weights, X_data, y_data, N, rho, sigma):
-        return self.MLP(optimized_weights, X_data ,y_data ,N ,rho ,sigma)
-
+        return self.MLP(optimized_weights, X_data ,y_data, N, rho, sigma)
 
     def plotting(self, weightOptimized, W = None, bias = None, title='Plotting of the function'): #if you do not provide a title, 'Plotting...' will be used
             #create the object
