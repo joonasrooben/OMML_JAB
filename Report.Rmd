@@ -1,18 +1,20 @@
 ---
 title: "Optimization Methods for Machine Learning"
-subtitle : "Project 1"
-author: "Group JAB : Aurèle Bartolomeo, Joonas Järve, Baudouin Martelée "
+author: 'Group JAB : Aurèle Bartolomeo, Joonas Järve, Baudouin Martelée '
 date: "November 2021"
-output: 
-  pdf_document: 
-    number_sections: true
+output:
+  pdf_document:
+    number_sections: yes
+  html_document:
+    df_print: paged
+subtitle: Project 1
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-# Introduction
+# Introduction {-}
 
 The present work aims to reconstruct a two dimensional function $\textit{F} : \mathbb{R}^2 \rightarrow \mathbb{R}$ from which we don't have the analytic
 expression. The reconstruction (in the region [-2;2]x[-3;3]) will be based on 250 points $(x^p;y^p)$ where $y^p$ is defined as $F(x^p)$ in addition with a small random noise. In a nutshell, we will use neural networks based first on Multilayer Perceptron, then on Radial Basis Functions.
@@ -30,7 +32,7 @@ As activation function for the MLP network we use the hyperbolic tangent
 
 where the spread parameter $\sigma$ will also belong to the set of hypeparameters $\pi$.
 
-We searched for the best hyperparameters (N, $\sigma$, $\rho$) by performing a grid search. Our final values for these parameters are (respectively) : 32, 1 and 0.0009. In the Appendix 
+We searched for the best hyperparameters (N, $\sigma$, $\rho$) by performing a grid search. Our final values for these parameters are (respectively) : 32, 1 and 0.0009. The 3 dimensional plot of the approximating function can be found in the Appendix of the corresponding section and we can already recognize the shape of the function we are looking to reconstruct. In order to analyse how the error behaves compared to the hyperparameters, we decided to plot the testing error depending on every hyperparameter $rho$, $sigma$ and $N$ (plots are in the Appedix). For each hyperparameter, we fix the two other values as the one we found with the grid search. We observe that the three plots have a different behaviour. For hyperparameter $rho$, the error seems to have a maximum peak around 0.0003 and decreases when going smaller or greater. The $sigma$ curve has the opposite behaviour : the lowest error is around 1.5 while it increases if $sigma$ is smaller or greater. The last plot is maybe the most interesting. We observe that the more $N$ increases, the more the error decreases. However at a certain point the error seems to reach a plateau. This can be explained by the fact that a too small number of units  may cause underfitting (the network is too simple). However, the fact that the error does not decrease anymore after a certain point could be the sign that the model is starting to become too complex, with a risk of overfitting if $N$ goes up. Particular values of this task (regarding error and computational time) can be found in the final table 
 
 ## RBF
 As Radial Basis Function for our network we choose the Gaussian function
@@ -39,7 +41,7 @@ As Radial Basis Function for our network we choose the Gaussian function
 
 As for MLP, the spread parameter $\sigma$ of the function $\phi$ will be added to the list of hyperparameters. After performing a grid search we decide to take as hyperparameters : N=32, $\sigma$=1, $rho$=0.0009.
 
-The plot of the approximating function found (see Apendix) 
+The plot of the approximating function can be found in the Appendix.  
 
 # Question 2. (Two blocks methods)
 
@@ -53,22 +55,48 @@ The plot of the approximating function found (see Apendix)
 
 # Conclusion : Final Table
 
+When compiling all the results we discuss in this report, we obtain this final table, that sums up the most important information. 
 ```{r, echo=FALSE}
 library(kableExtra)
 header = c("Ex", "", "N", "Sigma", 
-           "Rho", "Final train error",
+           "Rho", "Final 
+           train error",
            "Final test error", "Initial FOB",
            "Final FOB", "optimization time")
-first_line = c(0,0, 2)
-tab = rbind(header, first_line)
-kbl(tab, booktabs = TRUE, row.names=F)
+first_line = c("Q1.1","Full MLP",32,1.5,0.0007,0.0029,0.0059,"?","?",12.5911)
+second_line = c("Q1.2","Full RBF",32,1,0.0009,0.0194,0.0238,"?","?",1.1027)
+third_line = c("Q2.1", "Extreme MLP", 0,0,0,0,0,"?","?",0)
+fourth_line = c("Q2.2", "Unsupervised c RBF", 
+                32,1,0.0009,0.0429,0.0536,"?","?",0.5324)
+fifth_line = c("Q3", "Decomposition Method (RBF)", 
+               32,1,0.0009,0.0071,0.0113,"?","?",3.0077)
+tab = rbind(header, first_line, second_line, 
+            third_line, fourth_line, fifth_line)
+kbl(tab, booktabs = TRUE, row.names=F) %>%
+kable_styling(latex_options = c("striped", "scale_down"))
 ```
 
-# Appendix (Figures) {-}
+# APPENDIX (Figures) {-}
 
 ## Question 1 (MLP) {-}
 
+![Plot of the Approximating Function](images/11Approx.png){width=50%}
+
+![Evolution of the test error with rho](images/11rho.png){width=50%}
+
+![Evolution of the test error with sigma](images/11sigma.png){width=50%}
+
+![Evolution of the test error with N](images/11N.png){width=50%}
+
+
+
+
 ## Question 1 (RBF) {-}
 
+![Plot of the Approximating Function](images/12Approx.png){width=50%}
 
+![Evolution of the test error with rho](images/12rho.png){width=50%}
 
+![Evolution of the test error with sigma](images/12sigma.png){width=50%}
+
+![Evolution of the test error with N](images/12N.png){width=50%}

@@ -116,6 +116,9 @@ class NeuralNetwork(object):
         :param P: number of observations
         :return:
         """
+        
+        
+        
         return (1/(2*P))*sum((output - target)**2)
 
     def computeRegularizationTerm(self, omega, rho = 1):
@@ -197,6 +200,7 @@ class NeuralNetwork(object):
 
 
     def data_error(self, optimized_weigths, X_data, y_data):
+        
 
         f_x = self.prediction(optimized_weigths, X_data)
         f_x = f_x.reshape(len(f_x),1)
@@ -231,3 +235,33 @@ class NeuralNetwork(object):
         ax.set_title(title)
         plt.show()
 
+def grid_search(X_train, X_test, y_tr, y_te, task, rho_list, sigma_list, N_list, met) :
+    opt_sigma = -1
+    opt_rho = -1
+    opt_N = -1
+    opt_test_err = 1000
+
+    hyperparams_recap = np.zeros(shape=(len(rho_list),
+                                        len(sigma_list),
+                                        len(N_list)))
+    for rho in range(len(rho_list)) :
+        for sigma in range(len(sigma_list)) :
+            for N in range(len(N_list)) :
+                nn = NeuralNetwork(1, rho_list[rho], sigma_list[sigma], N_list[N])
+                omega = nn.createOmega()
+                mlp = nn.MLP(omega, X_train, y_tr)
+                result = nn.minimise(nn.MLP, omega, args=(X_train, y_tr))
+                optimized_weights = result.x
+                
+   
+                test_err = nn.data_error(optimized_weights, X_train, y_tr)
+
+                hyperparams_recap[rho, sigma, N] = test_err
+
+                if(test_err < opt_test_err) :
+                    opt_sigma = sigma_list[sigma]
+                    opt_rho = rho_list[rho]
+                    opt_N = N_list[N]
+                    opt_test_err = test_err
+    return ((opt_rho, opt_sigma, opt_N),hyperparams_recap)    
+            

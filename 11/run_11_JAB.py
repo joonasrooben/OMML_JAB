@@ -14,9 +14,9 @@ X_test = X_test.to_numpy()
 y_tr = y_train.to_numpy()
 y_te = y_test.to_numpy()
 
-rho = 1e-5
-sigma = 1
-N = 20
+rho = 0.0007
+sigma = 1.5
+N = 32
 nn = NeuralNetwork(1, rho, sigma, N)
 omega = nn.createOmega()
 mlp = nn.MLP(omega, X_train, y_tr)
@@ -34,8 +34,8 @@ nr_gr = result.njev
 s = f"""
 {'-'*40}
 # N: {32}
-# Sigma: {1.0}
-# Rho: {0.0009}
+# Sigma: {1.5}
+# Rho: {0.0007}
 # Optimization solver: CG
 # Number of function evaluations : {nr_fun}
 # Number of gradient evaluations : {nr_gr}
@@ -47,4 +47,4 @@ s = f"""
 
 print(s)
 
-plotMLP = nn.plotting(result.x, title= "plot of the function using MLP")
+plotMLP = nn.plotting(result.x, title= "Approximating Function (MLP)")
