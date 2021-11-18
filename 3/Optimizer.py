@@ -78,7 +78,6 @@ class Optimizer(object):
             args = (self.N,self.sigma, res, labels, self.rho, shape,C, 1)
             W = V 
             initial_loss =  self.loss(W, args)
-            print('Loss in the beginning:', initial_loss)            
             a = initial_loss
             diff = 10e10
             nr_grads = 0
@@ -90,7 +89,6 @@ class Optimizer(object):
                                                      method=self.met)#, options = opts, tol = tol)
                 nr_grads += result_rbf.njev
                 nr_fun += result_rbf.nfev
-                print('Loss after convex optim:',result_rbf.fun)
                 V = result_rbf.x
                 args = (self.N,self.sigma, res, labels, self.rho, shape,result_rbf.x, 2)
                 W = C
@@ -99,7 +97,6 @@ class Optimizer(object):
                 nr_grads += result_rbf.njev
                 nr_fun += result_rbf.nfev
                 b = result_rbf.fun
-                print('Loss after non convex optim:',b)
                 args = (self.N, self.sigma, res, labels, self.rho, shape,result_rbf.x, 1)
                 W =  V
                 diff = a - b
