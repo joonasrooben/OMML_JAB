@@ -5,13 +5,14 @@ date: "November 2021"
 output:
   pdf_document:
     number_sections: yes
+    extra_dependencies: ["float"]
   html_document:
     df_print: paged
 subtitle: Project 1
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE,fig.pos = "H", out.extra = "")
 ```
 
 # Introduction {-}
@@ -49,10 +50,20 @@ Recall that the majority of the values that we discuss in this section are liste
 
 # Question 2. (Two blocks methods)
 
-
 ## MLP
+In this section we have implemented an Extreme Learning procedure. 
+
 
 ## RBF
+Now, we take the same network design as in QUestion 1.2, that is, we take the same hyperparameters : N=32, $\sigma$=1 and $\rho$=0.0009. We then find the optimal weights by minimizing the regularized error using a conjugate gradient method (called "CG" in the python package scipy). We observe the following differences with Full RBF : 
+
+* the train error is greater than for Full RBF (0.042 vs 0.019)
+* the test error is greater (0.053 vs 0.023)
+* the number of function evaluations is greater (1247 vs 373)
+* the number of gradient evaluations is greater (1247 vs 361)
+* the optimization time is two times lower (0.53s vs 1.10s)
+
+The plot of the approximating function (see Appendix) is quite similar to the one we had in Question 1.2.
 
 # Question 3. (Decomposition method)
 
@@ -78,12 +89,14 @@ fifth_line = c("Q3", "Decomposition Method (RBF)",
 tab = rbind(header, first_line, second_line, 
             third_line, fourth_line, fifth_line)
 kbl(tab, booktabs = TRUE, row.names=F) %>%
-kable_styling(latex_options = c("striped", "scale_down"))
+kable_styling(latex_options = c("striped", 
+                                "scale_down",
+                                "HOLD_position"))
 ```
 
 # APPENDIX (Figures) {-}
 
-## Question 1 (MLP) {-}
+## Question 1.1 (MLP) {-}
 
 ![Plot of the Approximating Function](images/11Approx.png){width=50%}
 
@@ -96,7 +109,7 @@ kable_styling(latex_options = c("striped", "scale_down"))
 
 
 
-## Question 1 (RBF) {-}
+## Question 1.2 (RBF) {-}
 
 ![Plot of the Approximating Function](images/12Approx.png){width=50%}
 
@@ -105,3 +118,14 @@ kable_styling(latex_options = c("striped", "scale_down"))
 ![Evolution of the test error with sigma](images/12sigma.png){width=50%}
 
 ![Evolution of the test error with N](images/12N.png){width=50%}
+
+## Question 2.1 (Extreme MLP) {-}
+
+
+## Question 2.2 (unsupervised c RBF) {-}
+
+![Plot of the Approximating function](images/22Approx.png){width=50%}
+
+
+
+
