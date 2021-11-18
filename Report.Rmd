@@ -41,9 +41,14 @@ As Radial Basis Function for our network we choose the Gaussian function
 
 As for MLP, the spread parameter $\sigma$ of the function $\phi$ will be added to the list of hyperparameters. After performing a grid search we decide to take as hyperparameters : N=32, $\sigma$=1, $rho$=0.0009.
 
-The plot of the approximating function can be found in the Appendix.  
+The plot of the approximating function can be found in the Appendix. We analyse the occurence of overfitting/underfitting when varying the values of our hyperparameters. We decide to use the same method as for MLP, that is, we plot the test error in function of each hyperparameter (see Appendix). When looking at a particular hyperparameter, the value of the other are fixed to the best value that we found. The plot concerning $\rho$ is very clear. Its best value seems to be around 0.0009 and the error increases as we move away from this value. This is easy to explain : if $\rho$ is too small and since it controls the regularization parameter, it will not prevent overfitting as it should. Conversely, if $\rho$ grows too much, it will shrink the weights values and the model selected will underfit, making the testing error grow. In the error plot for $\sigma$ we note that it is minimal at 1, while the error keeps decreasing as N grows until 32.  
+
+## Comparison of the two networks performance
+
+Recall that the majority of the values that we discuss in this section are listed in the summmary table at the end of the report. At first, we can compare the plots of the approximating function obtained and we note that the MLP one seems to fit better with the true function plot, even though the RBF one is not bad. We confirm this first comment when we look at the testing error for both models. The testing error for RBF if approximately 4 times the one that we have for MLP. However, the computational cost for MLP is much higher. The time for optimizing the full MLP network is 10 times greater than for RBF (12.6 seconds compared to 1.10). It is confirmed also by looking at the number of function evaluations (63210 vs 373) and gradient evaluations (490 vs 361). 
 
 # Question 2. (Two blocks methods)
+
 
 ## MLP
 
