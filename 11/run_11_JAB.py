@@ -19,6 +19,7 @@ sigma = 1.5
 N = 32
 nn = NeuralNetwork(1, rho, sigma, N)
 omega = nn.createOmega()
+print("shape omega : ", omega.shape)
 mlp = nn.MLP(omega, X_train, y_tr)
 init_time = time.time()
 result = nn.minimise(nn.MLP, omega, args=(X_train, y_tr))

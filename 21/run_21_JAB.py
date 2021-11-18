@@ -14,47 +14,39 @@ X_test = X_test.to_numpy()
 y_tr = y_train.to_numpy()
 y_te = y_test.to_numpy()
 
-rho = 1e-5
-sigma = 1
-N = 20
+rho = 0.0007
+sigma = 1.5
+N = 32
 
-print("1")
+
 nn = NeuralNetwork(2, rho, sigma, N)
-print("2")
-v = np.array(nn.createWeightsForHiddenLayer(N))
-print("3")
-omega = nn.createOmega()
-print("4")
-W = omega[:-2*N].reshape((2, N))
-print("5")
-bias = omega[-2*N:-N]
-print("6")
-print(omega)
-print("7")
-mlp = nn.MLP(omega, X_train, y_tr, W, bias)
-print("8")
-init_time = time.time()
-print("9")
-result = nn.minimise(nn.MLP, v, args=(X_train, y_tr, W, bias))
-print("10")
-optimized_weights = result.x
-print("11")
-print("###################")
-print("W shape : ", W.shape)
-print("bias shape : ", bias.shape)
-print("v shape : ", optimized_weights.shape)
-omega2 = np.append(np.append(W.flatten(), bias), optimized_weights)
 
-print(omega2.shape)
-result2 = nn.minimise(nn.MLP, omega2, args=(X_train, y_tr))
+v = np.array(nn.createWeightsForHiddenLayer(N))
+
+omega = nn.createOmega()
+
+W = omega[:-2*N].reshape((2, N))
+v = omega[-(N):]
+bias = omega[-2*N:-N]
+print(omega)
+init_time = time.time()
+result = nn.minimise(nn.MLP, v, args=(X_train, y_tr, W, bias))
+optimized_weights = result.x
+print(W.flatten().shape)
+omega2 = np.append(np.append(W, bias), optimized_weights)
+nn2 = NeuralNetwork(1, rho, sigma, N)
+omega2 = np.append(np.append(W, bias), optimized_weights)
+mlp = nn2.MLP(omega2, X_train, y_tr)
+init_time = time.time()
+result2 = nn2.minimise(nn2.MLP, omega2, args=(X_train, y_tr))
 print("------------------")
 optimization_time = time.time() - init_time
 optimized_weights = result2.x
-train_err = nn.data_error(optimized_weights, X_train, y_tr)
-test_err = nn.data_error(optimized_weights, X_test, y_te)
+train_err = nn2.data_error(optimized_weights, X_train, y_tr)
+test_err = nn2.data_error(optimized_weights, X_test, y_te)
 
-nr_fun = result.nfev
-nr_gr = result.njev
+nr_fun = result2.nfev
+nr_gr = result2.njev
 
 s = f"""
 {'-'*40}
@@ -71,4 +63,4 @@ s = f"""
 {'-'*40}"""
 
 print(s)
-nn.plotting(result2.x,  title="function with MLP using Extreme learning")
+nn2.plotting(result2.x, optimized_weights, bias, title="function with MLP using Extreme learning")

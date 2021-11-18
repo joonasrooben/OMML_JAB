@@ -170,7 +170,7 @@ class NeuralNetwork(object):
 
 
 
-    def minimise(self, method, omega, args, maxiters = 50):
+    def minimise(self, method, omega, args, maxiters = 500):
         """
 
         :param method: method that we use to do the neural network
