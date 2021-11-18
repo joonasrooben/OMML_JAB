@@ -45,3 +45,4 @@ s = f"""
 """
 
 print(s)
+opt.plotting(result[1], 'Approximating Function (RBF)')

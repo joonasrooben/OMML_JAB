@@ -51,11 +51,19 @@ Recall that the majority of the values that we discuss in this section are liste
 # Question 2. (Two blocks methods)
 
 ## MLP
-In this section we have implemented an Extreme Learning procedure. 
 
+In this section we have implemented an Extreme Learning procedure. We keep the same network hyperparameters as in Question 1.1. We find the optimal weights using a conjugate gradient method (called "CG" in the python package scipy). We observe the following differences with Full MLP : 
+
+* the train error is greater than for Full MLP (0.017 vs 0.002)
+* the test error is greater (0.021 vs 0.005)
+* the number of function evaluations is greater (106038 vs 63210)
+* the number of gradient evaluations is greater (822 vs 490)
+* the optimization time is greater (23.42s vs 12.59s)
+
+We see that the computational effort with this method is greater, and does not improve the results in terms of training et test error. We have also made a plot of the approximating function in this case (see Appendix) and it seems to be a bit less resembling to the true function than the one we had with the full MLP.
 
 ## RBF
-Now, we take the same network design as in QUestion 1.2, that is, we take the same hyperparameters : N=32, $\sigma$=1 and $\rho$=0.0009. We then find the optimal weights by minimizing the regularized error using a conjugate gradient method (called "CG" in the python package scipy). We observe the following differences with Full RBF : 
+Now, we take the same network design as in Question 1.2, that is, we take the same hyperparameters : N=32, $\sigma$=1 and $\rho$=0.0009. We then find the optimal weights by minimizing the regularized error using a conjugate gradient method (called "CG" in the python package scipy). We observe the following differences with Full RBF : 
 
 * the train error is greater than for Full RBF (0.042 vs 0.019)
 * the test error is greater (0.053 vs 0.023)
@@ -67,6 +75,8 @@ The plot of the approximating function (see Appendix) is quite similar to the on
 
 # Question 3. (Decomposition method)
 
+We have implemented a two-blocks decomposition method for our RBF shallow network. We set the hyperparameters at the values selected in Question 1. The main principle behind this decomposition is to alternate the convex minimization with respect to the output weights with the non convex minimization with respect to the centers $c$. We used a conjugate gradient optimization routine to solve the two block subproblems. The maximum number of iterations is set to 40 and the tolerance to 0.001. The number of outer iterations at the end of the optimisation is 4. The number of function and gradient evaluation is 4709. The optimization time is 3 seconds. All these values are greater than for Question 2, which leads to the conclusion that it is less efficient. Quaitatively, this decomposition leads to a better training error (0.007 vs 0.042) and a better testing error (0.011 vs 0.053). The plot of the function obtained is in the Appendix and seems very close to the true function.
+
 # Bonus : Best Model
 
 # Conclusion : Final Table
@@ -77,15 +87,14 @@ library(kableExtra)
 header = c("Ex", "", "N", "Sigma", 
            "Rho", "Final 
            train error",
-           "Final test error", "Initial FOB",
-           "Final FOB", "optimization time")
-first_line = c("Q1.1","Full MLP",32,1.5,0.0007,0.0029,0.0059,"?","?",12.5911)
-second_line = c("Q1.2","Full RBF",32,1,0.0009,0.0194,0.0238,"?","?",1.1027)
-third_line = c("Q2.1", "Extreme MLP", 0,0,0,0,0,"?","?",0)
+           "Final test error", "optimization time")
+first_line = c("Q1.1","Full MLP",32,1.5,0.0007,0.0029,0.0059,12.5911)
+second_line = c("Q1.2","Full RBF",32,1,0.0009,0.0194,0.0238,1.1027)
+third_line = c("Q2.1", "Extreme MLP", 32,1.5,0.0007,0.0172,0.0217,23.4200)
 fourth_line = c("Q2.2", "Unsupervised c RBF", 
-                32,1,0.0009,0.0429,0.0536,"?","?",0.5324)
+                32,1,0.0009,0.0429,0.0536,0.5324)
 fifth_line = c("Q3", "Decomposition Method (RBF)", 
-               32,1,0.0009,0.0071,0.0113,"?","?",3.0077)
+               32,1,0.0009,0.0071,0.0113,3.0077)
 tab = rbind(header, first_line, second_line, 
             third_line, fourth_line, fifth_line)
 kbl(tab, booktabs = TRUE, row.names=F) %>%
@@ -93,6 +102,8 @@ kable_styling(latex_options = c("striped",
                                 "scale_down",
                                 "HOLD_position"))
 ```
+
+\newpage
 
 # APPENDIX (Figures) {-}
 
@@ -107,7 +118,7 @@ kable_styling(latex_options = c("striped",
 ![Evolution of the test error with N](images/11N.png){width=50%}
 
 
-
+\newpage
 
 ## Question 1.2 (RBF) {-}
 
@@ -119,13 +130,21 @@ kable_styling(latex_options = c("striped",
 
 ![Evolution of the test error with N](images/12N.png){width=50%}
 
+\newpage
+
 ## Question 2.1 (Extreme MLP) {-}
+
+![Plot of the Approximating function](images/21Approx.png){width=50%}
 
 
 ## Question 2.2 (unsupervised c RBF) {-}
 
 ![Plot of the Approximating function](images/22Approx.png){width=50%}
 
+\newpage
 
+## Question 3 (Decomposition method) {-}
+
+![Plot of the Approximating function](images/3Approx.png){width=40%}
 
 

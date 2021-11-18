@@ -28,18 +28,15 @@ omega = nn.createOmega()
 W = omega[:-2*N].reshape((2, N))
 v = omega[-(N):]
 bias = omega[-2*N:-N]
-print(omega)
 init_time = time.time()
 result = nn.minimise(nn.MLP, v, args=(X_train, y_tr, W, bias))
 optimized_weights = result.x
-print(W.flatten().shape)
 omega2 = np.append(np.append(W, bias), optimized_weights)
 nn2 = NeuralNetwork(1, rho, sigma, N)
 omega2 = np.append(np.append(W, bias), optimized_weights)
 mlp = nn2.MLP(omega2, X_train, y_tr)
 init_time = time.time()
 result2 = nn2.minimise(nn2.MLP, omega2, args=(X_train, y_tr))
-print("------------------")
 optimization_time = time.time() - init_time
 optimized_weights = result2.x
 train_err = nn2.data_error(optimized_weights, X_train, y_tr)
@@ -51,8 +48,8 @@ nr_gr = result2.njev
 s = f"""
 {'-'*40}
 # N: {32}
-# Sigma: {1.0}
-# Rho: {0.0009}
+# Sigma: {1.5}
+# Rho: {0.0007}
 # Optimization solver: CG
 # Number of function evaluations : {nr_fun}
 # Number of gradient evaluations : {nr_gr}
@@ -63,4 +60,4 @@ s = f"""
 {'-'*40}"""
 
 print(s)
-nn2.plotting(result2.x, optimized_weights, bias, title="function with MLP using Extreme learning")
+nn2.plotting(result2.x, optimized_weights, bias, title="Approximating function (MLP)")
